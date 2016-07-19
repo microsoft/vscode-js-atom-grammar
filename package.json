@@ -1,0 +1,32 @@
+{
+	"name": "js-atom-grammar",
+	"private": true,
+    "displayName": "JavaScript Atom Grammar",
+    "description": "The Atom editor's JavaScript text mate grammar.",
+    "license": "MIT",
+	"author": "Microsoft Corporation",
+    "galleryBanner": {
+		"color": "#5c2d91",
+		"theme": "dark"
+	},
+    "icon": "logo.png",
+	"publisher": "ms-vscode",
+	"version": "0.1.2",
+	"engines": { "vscode": "*" },
+    "extensionDependencies": [
+        "vscode.javascript"
+    ],
+	"categories": [
+		"Languages"
+	],
+    "keywords": [
+        "javascript"
+    ],
+	"contributes": {
+		"grammars": [{
+			"language": "javascript",
+			"scopeName": "source.js",
+			"path": "./syntaxes/javascript.json"
+		}]
+	}
+}
