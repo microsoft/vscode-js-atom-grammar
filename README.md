@@ -10,7 +10,8 @@ there.
 Requests for the extension (such as update requests) can be filed against the vscode repository.
 
 ### License
-The extension is licensed under the [MIT license](LICENSE.txt).
+The extension is made available under the following [Microsoft Software License Terms](LICENSE.txt).
+
 The grammar syntaxes/javascript.json was derived from grammars/javascript.cson in the 
 Atom package https://github.com/atom/language-javascript.
-The grammar included is licenced under the following license: https://github.com/atom/language-javascript/blob/master/LICENSE.md
+The grammar included is licensed under the following license: https://github.com/atom/language-javascript/blob/master/LICENSE.md
