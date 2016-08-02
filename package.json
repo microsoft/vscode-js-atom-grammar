@@ -3,7 +3,7 @@
 	"private": true,
     "displayName": "JavaScript Atom Grammar",
     "description": "The Atom editor's JavaScript text mate grammar.",
-    "license": "SEE LICENSE IN LICENCE.txt",
+    "license": "SEE LICENSE IN LICENSE.txt",
 	"author": "Microsoft Corporation",
     "galleryBanner": {
 		"color": "#5c2d91",
@@ -11,7 +11,7 @@
 	},
     "icon": "logo.png",
 	"publisher": "ms-vscode",
-	"version": "0.1.3",
+	"version": "0.1.7",
 	"engines": { "vscode": "*" },
     "extensionDependencies": [
         "vscode.javascript"
