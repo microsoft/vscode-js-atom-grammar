@@ -13,5 +13,5 @@ Requests for the extension (such as update requests) can be filed against the vs
 The extension is made available under the following [Microsoft Software License Terms](LICENSE.txt).
 
 The grammar syntaxes/javascript.json was derived from grammars/javascript.cson in the 
-Atom package https://github.com/atom/language-javascript.
+Atom package https://github.com/atom/language-javascript, commit [atom/language-javascript@1e9eee4 (2016-09-08)](https://github.com/atom/language-javascript/commit/1e9eee42c100b929156dedc2345e7c1370bcdb7d). 
 The grammar included is licensed under the following license: https://github.com/atom/language-javascript/blob/master/LICENSE.md
