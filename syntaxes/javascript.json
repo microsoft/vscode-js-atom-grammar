@@ -14,6 +14,7 @@
 		"jspre",
 		"pac",
 		"pjs",
+		"sjs",
 		"xsjs",
 		"xsjslib"
 	],
@@ -21,7 +22,7 @@
 	"name": "JavaScript",
 	"patterns": [
 		{
-			"begin": "(?<!\\.)\\b(import)(?!\\s*:)\\b",
+			"begin": "(?<!\\.)\\b(import)(?!\\s*[:(])\\b",
 			"beginCaptures": {
 				"1": {
 					"name": "keyword.control.js"
@@ -31,13 +32,13 @@
 			"name": "meta.import.js",
 			"patterns": [
 				{
-					"begin": "\\{",
+					"begin": "{",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.modules.begin.js"
 						}
 					},
-					"end": "\\}",
+					"end": "}",
 					"endCaptures": {
 						"0": {
 							"name": "punctuation.definition.modules.end.js"
@@ -146,7 +147,7 @@
 			}
 		},
 		{
-			"begin": "(?<!\\.)\\b(export)(?!\\s*:)\\b",
+			"begin": "(?<!\\.)\\b(export)(?!\\s*[:(])\\b",
 			"beginCaptures": {
 				"1": {
 					"name": "keyword.control.js"
@@ -159,13 +160,13 @@
 					"include": "#numbers"
 				},
 				{
-					"begin": "\\{(?=.*\\bfrom\\b)",
+					"begin": "{(?=.*\\bfrom\\b)",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.modules.begin.js"
 						}
 					},
-					"end": "\\}",
+					"end": "}",
 					"endCaptures": {
 						"0": {
 							"name": "punctuation.definition.modules.end.js"
@@ -209,13 +210,13 @@
 					]
 				},
 				{
-					"begin": "(?![a-zA-Z_$0-9])\\{",
+					"begin": "(?![a-zA-Z_$0-9]){",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.modules.begin.js"
 						}
 					},
-					"end": "\\}",
+					"end": "}",
 					"endCaptures": {
 						"0": {
 							"name": "punctuation.definition.modules.end.js"
@@ -290,7 +291,7 @@
 			]
 		},
 		{
-			"match": "(?<!\\.)\\b(?<!\\$)(super|this|arguments)(?!\\s*:|\\$)\\b",
+			"match": "(?:(?<=\\.{3})|(?<!\\.)\\b)(?<!\\$)(super|this|arguments)(?!\\s*:|\\$)\\b",
 			"name": "variable.language.js"
 		},
 		{
@@ -465,7 +466,7 @@
 			]
 		},
 		{
-			"begin": "(?x)\n(?=\n  (?!\n    (break|case|catch|continue|do|else|finally|for|function|if|export|\n    import|package|return|switch|throw|try|while|with)\n    [\\s\\(]\n  )\n  \\b[a-zA-Z_$][\\w$]*\n  \\s*\\(\\s*\n     ((\"[^\"]*\")|(\\'[^\\']*\\')|((?!\"|\\'|\\(|\\)).))*\n  \\)\\s*\\{\n)",
+			"begin": "(?x)\n(?=\n  (?!\n    (break|case|catch|continue|do|else|finally|for|function|if|\n    package|return|switch|throw|try|while|with)\n    [\\s\\(]\n  )\n  (\n    \\b(get|set)            # Property getter/setter: get foo(){}\n    (?:\\s+|(?=\\[))        # Followed by whitespace or square bracket\n  )?\n  (                         # Method name\n    \\b[a-zA-Z_$][\\w$]*    # Fixed name\n    |\n    \\[                     # Computed property key\n      .*?[^\\[\\]\\s].*?    # Contains at least one non-brace character\n    \\]\n  )\n  \\s*\\(\\s*               # Start of arguments list\n    (\n      \"[^\"]*\"  |            # Double-quoted string\n      '[^']*'  |            # Single-quoted string\n       [^\"()']              # Any non-bracket or non-quote\n    )*\n  \\)\\s*                   # End of arguments\n  {                         # Beginning of body\n)",
 			"end": "(?<=})",
 			"patterns": [
 				{
@@ -479,6 +480,33 @@
 					"end": "(?<=\\))",
 					"name": "meta.function.method.definition.js",
 					"patterns": [
+						{
+							"match": "(\\[)(.+)(\\])(?=\\s*\\()",
+							"captures": {
+								"1": {
+									"name": "punctuation.definition.computed-key.begin.bracket.square.js"
+								},
+								"2": {
+									"patterns": [
+										{
+											"include": "$self"
+										},
+										{
+											"match": "[a-zA-Z_$][\\w$]*",
+											"name": "variable.parameter.property.js"
+										}
+									]
+								},
+								"3": {
+									"name": "punctuation.definition.computed-key.end.bracket.square.js"
+								}
+							},
+							"name": "meta.computed-key.js"
+						},
+						{
+							"match": "\\b(get|set)(?=\\s*\\[.+\\]\\s*\\(|\\s+[^\\s\\[(]+\\s*\\()",
+							"name": "keyword.operator.$1ter.js"
+						},
 						{
 							"match": "\\b([a-zA-Z_$][\\w$]*)",
 							"name": "entity.name.function.js"
@@ -797,7 +825,7 @@
 			"begin": "(?<!\\.)\\b(const)(?!\\s*:)\\b",
 			"beginCaptures": {
 				"1": {
-					"name": "storage.modifier.js"
+					"name": "storage.type.const.js"
 				}
 			},
 			"end": "(\\bof\\b|\\bin\\b)|(;)|(=)|(?<![,{])\\n",
@@ -1008,7 +1036,7 @@
 			"include": "#properties"
 		},
 		{
-			"match": "((?<!\\.|[\\w$])(?![_\\$]+[^A-Z0-9_$])\\$*\\b(?:[A-Z_$][A-Z0-9_$]*)\\b\\$*)(?!\\s*:)",
+			"match": "((?<!\\.|[\\w$])(?![_\\$]+[^A-Z0-9_$])\\$*\\b(?:[A-Z_$][A-Z0-9_$]*)\\b\\$*)",
 			"name": "constant.other.js"
 		},
 		{
@@ -1147,7 +1175,7 @@
 					"name": "keyword.operator.comparison.js"
 				},
 				{
-					"match": "&&|!|\\|\\|",
+					"match": "&&|!!|!|\\|\\|",
 					"name": "keyword.operator.logical.js"
 				},
 				{
@@ -1248,6 +1276,48 @@
 						},
 						{
 							"include": "text.html.basic"
+						}
+					]
+				},
+				{
+					"begin": "(?<=innerHTML)\\s*(\\+?=)\\s*(?=`)",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.operator.assignment.js"
+						}
+					},
+					"end": "(?<=`)",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.js"
+						}
+					},
+					"contentName": "string.quoted.template.html.js",
+					"patterns": [
+						{
+							"begin": "`",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.definition.string.begin.js"
+								}
+							},
+							"end": "`",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.definition.string.end.js"
+								}
+							},
+							"patterns": [
+								{
+									"include": "#string_escapes"
+								},
+								{
+									"include": "#interpolated_js"
+								},
+								{
+									"include": "text.html.basic"
+								}
+							]
 						}
 					]
 				},
@@ -1633,13 +1703,13 @@
 		"interpolated_js": {
 			"patterns": [
 				{
-					"begin": "\\$\\{",
+					"begin": "\\${",
 					"captures": {
 						"0": {
 							"name": "punctuation.section.embedded.js"
 						}
 					},
-					"end": "\\}",
+					"end": "}",
 					"name": "source.js.embedded.source",
 					"patterns": [
 						{
@@ -1671,11 +1741,29 @@
 		"docblock": {
 			"patterns": [
 				{
-					"match": "(?x) (?<!\\w)@\n(abstract|access|alias|arg|argument|async|attribute|augments|author|beta|borrows|bubbes|callback|chainable|class\n|classdesc|code|config|const|constant|constructor|constructs|copyright|default|defaultvalue|define|deprecated|desc\n|description|dict|emits|enum|event|example|exports?|extends|extension|extension_for|extensionfor|external|file\n|fileoverview|final|fires|for|function|global|host|ignore|implements|inherit[Dd]oc|inner|instance|interface|kind\n|lends|license|listens|main|member|memberof|method|mixex|mixins?|module|name|namespace|nocollapse|nosideeffects\n|override|overview|package|param|preserve|private|prop|property|protected|public|read[Oo]nly|record|require[ds]\n|returns?|see|since|static|struct|submodule|summary|template|this|throws|todo|tutorial|type|typedef|unrestricted\n|uses|var|variation|version|virtual|writeOnce)\\b",
+					"match": "(?x) (?<!\\w)@\n(abstract|access|alias|arg|argument|async|attribute|augments|author|beta|borrows|bubbes|callback|chainable|class\n|classdesc|code|config|const|constant|constructor|constructs|copyright|default|defaultvalue|define|deprecated|desc\n|description|dict|emits|enum|event|example|exports?|extends|extension|extension_for|extensionfor|external|file\n|fileoverview|final|fires|for|function|global|host|ignore|implements|implicitCast|inherit[Dd]oc|inner|instance\n|interface|kind|lends|license|listens|main|member|memberof|method|mixex|mixins?|modifies|module|name|namespace\n|noalias|nocollapse|nocompile|nosideeffects|override|overview|package|param|preserve|private|prop|property\n|protected|public|read[Oo]nly|record|require[ds]|returns?|see|since|static|struct|submodule|summary|suppress\n|template|this|throws|todo|type|typedef|unrestricted|uses|var|variation|version|virtual|writeOnce)\\b",
 					"name": "storage.type.class.jsdoc"
 				},
 				{
-					"match": "(?x)\n(?:(?<=@param)|(?<=@arg)|(?<=@argument)|(?<=@type))\n\\s+\n({(?:\n  \\* |                                        # {*} any type\n  \\? |                                        # {?} unknown type\n\n  (?:                                          # Check for a prefix\n    \\? |                                      # {?string} nullable type\n    !   |                                      # {!string} non-nullable type\n    \\.{3}                                     # {...string} variable number of parameters\n  )?\n\n  (?:\n    \\(                                        # Opening bracket of multiple types with parenthesis {(string|number)}\n      [a-zA-Z_$]+\n      (?:\n        (?:\n          [\\w$]*\n          (?:\\[\\])?                          # {(string[]|number)} type application, an array of strings or a number\n        ) |\n        \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>         # {Array<string>} or {Object<string, number>} type application (optional .)\n      )\n      (?:\n        [\\.|~]                                # {Foo.bar} namespaced, {string|number} multiple, {Foo~bar} class-specific callback\n        [a-zA-Z_$]+\n        (?:\n          (?:\n            [\\w$]*\n            (?:\\[\\])?                        # {(string|number[])} type application, a string or an array of numbers\n          ) |\n          \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>       # {Array<string>} or {Object<string, number>} type application (optional .)\n        )\n      )*\n    \\) |\n    [a-zA-Z_$]+\n    (?:\n      (?:\n        [\\w$]*\n        (?:\\[\\])?                            # {string[]|number} type application, an array of strings or a number\n      ) |\n      \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>           # {Array<string>} or {Object<string, number>} type application (optional .)\n    )\n    (?:\n      [\\.|~]                                  # {Foo.bar} namespaced, {string|number} multiple, {Foo~bar} class-specific callback\n      [a-zA-Z_$]+\n      (?:\n        [\\w$]* |\n        \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>         # {Array<string>} or {Object<string, number>} type application (optional .)\n      )\n    )*\n  )\n                                               # Check for suffix\n  (?:\\[\\])?                                  # {string[]} type application, an array of strings\n  =?                                           # {string=} optional parameter\n)})\n\\s+\n(\n  \\[                                          # [foo] optional parameter\n    \\s*\n    (?:\n      [a-zA-Z_$][\\w$]*\n      (?:\n        (?:\\[\\])?                            # Foo[].bar properties within an array\n        \\.                                    # Foo.Bar namespaced parameter\n        [a-zA-Z_$][\\w$]*\n      )*\n      (?:\n        \\s*\n        =                                      # [foo=bar] Default parameter value\n        \\s*\n        [\\w$\\s]*\n      )?\n    )\n    \\s*\n  \\] |\n  (?:\n    [a-zA-Z_$][\\w$]*\n    (?:\n      (?:\\[\\])?                              # Foo[].bar properties within an array\n      \\.                                      # Foo.Bar namespaced parameter\n      [a-zA-Z_$][\\w$]*\n    )*\n  )?\n)\n\\s+\n(?:-\\s+)?                                     # optional hyphen before the description\n((?:(?!\\*\\/).)*)                             # The type description",
+					"match": "(?x)\n(\n  \\[\n    [^\\]]+            # Optional [link text] preceding {@link syntax}\n  \\]\n\n  (?!                  # Check to avoid highlighting two sets of link text\n    {\n      @\\w+            # Tagname\n      \\s+\n      [^\\s|}]+        # Namepath/URL\n      [\\s|]           # Whitespace or bar delimiting description\n      [^}]*\n    }\n  )\n)?\n\n(?:\n  {\n    (\n      @\n      (?: link         # Name of tag\n        | linkcode\n        | linkplain\n        | tutorial\n      )\n    )\n\n    \\s+\n\n    ([^\\s|}]+)        # Namepath or URL\n\n    (?:                # Optional link text following link target\n      [\\s|]           # Bar or space separating target and text\n      [^}]*            # Actual text\n    )?\n  }\n)",
+					"captures": {
+						"0": {
+							"name": "entity.name.type.instance.jsdoc"
+						},
+						"1": {
+							"name": "constant.other.description.jsdoc"
+						},
+						"2": {
+							"name": "storage.type.class.jsdoc"
+						},
+						"3": {
+							"name": "variable.other.description.jsdoc"
+						}
+					},
+					"name": "other.meta.jsdoc"
+				},
+				{
+					"match": "(?x)\n(?:(?<=@param)|(?<=@arg)|(?<=@argument)|(?<=@type))\n\\s+\n({(?:\n  \\* |                                       # {*} any type\n  \\? |                                       # {?} unknown type\n\n  (?:\n    (?:                                       # Check for a prefix\n      \\? |                                   # {?string} nullable type\n      !   |                                   # {!string} non-nullable type\n      \\.{3}                                  # {...string} variable number of parameters\n      [*?]?                                   # {...*} Variable number of mixed types\n    )?\n\n    (?:\n      (?:\n        function                              # {function(string, number)} function type\n        \\s*\n        (?:\n          (?:\n            \\(\\s*\n            \\.{3}[a-zA-Z_$][\\w$]+           # {function(...string)} variable number of parameters\n            \\s*\\)\n          )\n          |\n          (?:\n            \\(\\s*\n            (?:\n              (?:\\?|!)?                      # {function(?string)} or function(!string)} nullable/non-nullable type\n              [a-zA-Z_$][\\w$]+\n              (?:\\[\\])?                     # {function(string[])} type application, an array of strings\n              (?:\n                (?:\n                  (?:\n                    \\s*,\\s*\n                    (?:\\?|!)?                # {function(?string)} or function(!string)} nullable/non-nullable type\n                    [a-zA-Z_$][\\w$]+\n                    (?:\\[\\])?               # {function(string[])} type application, an array of strings\n                  )*\n                  (?:\n                    \\s*,\\s*\n                    \\.{3}[a-zA-Z_$][\\w$]+   # {function(string, ...string)} variable number of parameters\n                  )?\n                )\n                |\n                (?:\n                  =?                          # {function(string=)} optional parameter\n                  (?:\n                    (?<!=)                    # {function(string, string, number)} loop non-optional params\n                    \\s*,\\s*\n                    (?:\\?|!)?                # {function(?string)} or function(!string)} nullable/non-nullable type\n                    [a-zA-Z_$][\\w$]+\n                    (?:\\[\\])?               # {function(string[])} type application, an array of strings\n                    =?\n                  )*\n                  (?:\n                    (?<==)                    # {function(string, string=, number=)} loop optional params\n                    \\s*,\\s*\n                    (?:\\?|!)?                # {function(?string)} or function(!string)} nullable/non-nullable type\n                    [a-zA-Z_$][\\w$]+\n                    (?:\\[\\])?               # {function(string[])} type application, an array of strings\n                    =\n                  )*\n                )\n              )\n            )?\n            \\s*\\)\n          )\n        )\n        (?:                                   # {function(): string} function return type\n          \\s*:\\s*\n          [a-zA-Z_$][\\w$]*\n        )?\n      )?\n      |\n      (?:\n        \\(                                   # Opening bracket of multiple types with parenthesis {(string|number)}\n          [a-zA-Z_$]+\n          (?:\n            (?:\n              [\\w$]*\n              (?:\\[\\])?                     # {(string[]|number)} type application, an array of strings or a number\n            ) |\n            \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>    # {Array<string>} or {Object<string, number>} type application (optional .)\n          )\n          (?:\n            [\\.|~]                           # {Foo.bar} namespaced, {string|number} multiple, {Foo~bar} class-specific callback\n            [a-zA-Z_$]+\n            (?:\n              (?:\n                [\\w$]*\n                (?:\\[\\])?                   # {(string|number[])} type application, a string or an array of numbers\n              ) |\n              \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>  # {Array<string>} or {Object<string, number>} type application (optional .)\n            )\n          )*\n        \\) |\n        [a-zA-Z_$]+\n        (?:\n          (?:\n            [\\w$]*\n            (?:\\[\\])?                       # {(string|number[])} type application, a string or an array of numbers\n          ) |\n          \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>      # {Array<string>} or {Object<string, number>} type application (optional .)\n        )\n        (?:\n          [\\.|~]                             # {Foo.bar} namespaced, {string|number} multiple, {Foo~bar} class-specific callback\n          [a-zA-Z_$]+\n          (?:\n            [\\w$]* |\n            \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>    # {Array<string>} or {Object<string, number>} type application (optional .)\n          )\n        )*\n      )\n    )\n                                              # Check for suffix\n    (?:\\[\\])?                               # {string[]} type application, an array of strings\n    =?                                        # {string=} optional parameter\n  )\n)})\n\\s+\n(\n  \\[                                         # [foo] optional parameter\n    \\s*\n    (?:\n      [a-zA-Z_$][\\w$]*\n      (?:\n        (?:\\[\\])?                           # Foo[].bar properties within an array\n        \\.                                   # Foo.Bar namespaced parameter\n        [a-zA-Z_$][\\w$]*\n      )*\n      (?:\n        \\s*\n        =                                     # [foo=bar] Default parameter value\n        \\s*\n        (?:\n          [\\w$.\\s]* |                       # [foo=bar] Unquoted\n          \"[^\"]*\"     |                       # [foo=\"bar\"] Double-quoted\n          '[^']*'     |                       # [foo='bar'] Single-quoted\n          {[^{}]*}    |                       # [foo={a:1}] Object literal\n          \\[ [^\\[\\]]* \\]                  # [foo=[1,2]] Array literal\n        )\n      )?\n    )\n    \\s*\n  \\] |\n  (?:\n    [a-zA-Z_$][\\w$]*\n    (?:\n      (?:\\[\\])?                             # Foo[].bar properties within an array\n      \\.                                     # Foo.Bar namespaced parameter\n      [a-zA-Z_$][\\w$]*\n    )*\n  )?\n)\n\\s+\n(?:-\\s+)?                                     # optional hyphen before the description\n((?:(?!\\*\\/).)*)                             # The type description",
 					"captures": {
 						"0": {
 							"name": "other.meta.jsdoc"
@@ -1687,12 +1775,17 @@
 							"name": "variable.other.jsdoc"
 						},
 						"3": {
-							"name": "other.description.jsdoc"
+							"name": "other.description.jsdoc",
+							"patterns": [
+								{
+									"include": "#docblock"
+								}
+							]
 						}
 					}
 				},
 				{
-					"match": "(?x)\n({(?:\n  \\* |                                        # {*} any type\n  \\? |                                        # {?} unknown type\n\n  (?:                                          # Check for a prefix\n    \\? |                                      # {?string} nullable type\n    !   |                                      # {!string} non-nullable type\n    \\.{3}                                     # {...string} variable number of parameters\n  )?\n\n  (?:\n    \\(                                        # Opening bracket of multiple types with parenthesis {(string|number)}\n      [a-zA-Z_$]+\n      (?:\n        [\\w$]* |\n        \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>         # {Array<string>} or {Object<string, number>} type application (optional .)\n      )\n      (?:\n        [\\.|~]                                # {Foo.bar} namespaced, {string|number} multiple, {Foo~bar} class-specific callback\n        [a-zA-Z_$]+\n        (?:\n          [\\w$]* |\n          \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>       # {Array<string>} or {Object<string, number>} type application (optional .)\n        )\n      )*\n    \\) |\n    [a-zA-Z_$]+\n    (?:\n      [\\w$]* |\n      \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>           # {Array<string>} or {Object<string, number>} type application (optional .)\n    )\n    (?:\n      [\\.|~]                                  # {Foo.bar} namespaced, {string|number} multiple, {Foo~bar} class-specific callback\n      [a-zA-Z_$]+\n      (?:\n        [\\w$]* |\n        \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>         # {Array<string>} or {Object<string, number>} type application (optional .)\n      )\n    )*\n  )\n                                               # Check for suffix\n  (?:\\[\\])?                                  # {string[]} type application, an array of strings\n  =?                                           # {string=} optional parameter\n)})\n\\s+\n(?:-\\s+)?                                     # optional hyphen before the description\n((?:(?!\\*\\/).)*)                             # The type description",
+					"match": "(?x)\n({(?:\n  \\* |                                       # {*} any type\n  \\? |                                       # {?} unknown type\n\n  (?:\n    (?:                                       # Check for a prefix\n      \\? |                                   # {?string} nullable type\n      !   |                                   # {!string} non-nullable type\n      \\.{3}                                  # {...string} variable number of parameters\n      [*?]?                                   # {...*} Variable number of mixed types\n    )?\n\n    (?:\n      (?:\n        function                              # {function(string, number)} function type\n        \\s*\n        (?:\n          (?:\n            \\(\\s*\n            \\.{3}[a-zA-Z_$][\\w$]+           # {function(...string)} variable number of parameters\n            \\s*\\)\n          )\n          |\n          (?:\n            \\(\\s*\n            (?:\n              (?:\\?|!)?                      # {function(?string)} or function(!string)} nullable/non-nullable type\n              [a-zA-Z_$][\\w$]+\n              (?:\\[\\])?                     # {function(string[])} type application, an array of strings\n              (?:\n                (?:\n                  (?:\n                    \\s*,\\s*\n                    (?:\\?|!)?                # {function(?string)} or function(!string)} nullable/non-nullable type\n                    [a-zA-Z_$][\\w$]+\n                    (?:\\[\\])?               # {function(string[])} type application, an array of strings\n                  )*\n                  (?:\n                    \\s*,\\s*\n                    \\.{3}[a-zA-Z_$][\\w$]+   # {function(string, ...string)} variable number of parameters\n                  )?\n                )\n                |\n                (?:\n                  =?                          # {function(string=)} optional parameter\n                  (?:\n                    (?<!=)                    # {function(string, string, number)} loop non-optional params\n                    \\s*,\\s*\n                    (?:\\?|!)?                # {function(?string)} or function(!string)} nullable/non-nullable type\n                    [a-zA-Z_$][\\w$]+\n                    (?:\\[\\])?               # {function(string[])} type application, an array of strings\n                    =?\n                  )*\n                  (?:\n                    (?<==)                    # {function(string, string=, number=)} loop optional params\n                    \\s*,\\s*\n                    (?:\\?|!)?                # {function(?string)} or function(!string)} nullable/non-nullable type\n                    [a-zA-Z_$][\\w$]+\n                    (?:\\[\\])?               # {function(string[])} type application, an array of strings\n                    =\n                  )*\n                )\n              )\n            )?\n            \\s*\\)\n          )\n        )\n        (?:                                   # {function(): string} function return type\n          \\s*:\\s*\n          [a-zA-Z_$][\\w$]*\n        )?\n      )?\n      |\n      (?:\n        \\(                                   # Opening bracket of multiple types with parenthesis {(string|number)}\n          [a-zA-Z_$]+\n          (?:\n            (?:\n              [\\w$]*\n              (?:\\[\\])?                     # {(string[]|number)} type application, an array of strings or a number\n            ) |\n            \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>    # {Array<string>} or {Object<string, number>} type application (optional .)\n          )\n          (?:\n            [\\.|~]                           # {Foo.bar} namespaced, {string|number} multiple, {Foo~bar} class-specific callback\n            [a-zA-Z_$]+\n            (?:\n              (?:\n                [\\w$]*\n                (?:\\[\\])?                   # {(string|number[])} type application, a string or an array of numbers\n              ) |\n              \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>  # {Array<string>} or {Object<string, number>} type application (optional .)\n            )\n          )*\n        \\) |\n        [a-zA-Z_$]+\n        (?:\n          (?:\n            [\\w$]*\n            (?:\\[\\])?                       # {(string|number[])} type application, a string or an array of numbers\n          ) |\n          \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>      # {Array<string>} or {Object<string, number>} type application (optional .)\n        )\n        (?:\n          [\\.|~]                             # {Foo.bar} namespaced, {string|number} multiple, {Foo~bar} class-specific callback\n          [a-zA-Z_$]+\n          (?:\n            [\\w$]* |\n            \\.?<[\\w$]+(?:,\\s+[\\w$]+)*>    # {Array<string>} or {Object<string, number>} type application (optional .)\n          )\n        )*\n      )\n    )\n                                              # Check for suffix\n    (?:\\[\\])?                               # {string[]} type application, an array of strings\n    =?                                        # {string=} optional parameter\n  )\n)})\n\\s+\n(?:-\\s+)?                                    # optional hyphen before the description\n((?:(?!\\*\\/).)*)                            # The type description",
 					"captures": {
 						"0": {
 							"name": "other.meta.jsdoc"
@@ -1701,7 +1794,12 @@
 							"name": "entity.name.type.instance.jsdoc"
 						},
 						"2": {
-							"name": "other.description.jsdoc"
+							"name": "other.description.jsdoc",
+							"patterns": [
+								{
+									"include": "#docblock"
+								}
+							]
 						}
 					}
 				}
@@ -1871,5 +1969,5 @@
 			]
 		}
 	},
-	"version": "https://github.com/atom/language-javascript/commit/28589eea31a36c787e8100e3121f86729932956a"
+	"version": "https://github.com/atom/language-javascript/commit/a0ef65d2e08debaaa7d762d511fbf4411faa5502"
 }

@@ -1,9 +1,10 @@
 ## The Atom JavaScript grammar 
 
 This extension replaces the JavaScript grammar in Visual Studio Code with the JavaScript grammar from the Atom editor. 
+This allows you to have the same syntax coloring experience as in Atom. 
 
-This allows you to have the same syntax coloring experience as in Atom. The Atom grammar supports
-variable and function reference highlighting, of course only if the currently active color theme colorizes these.
+Note: Since the latest update, the JavaScript grammar shipped with VS Code now also supports colorizing of varable and function references
+and aims to be feature equivalent to the Atom grammar. The VS Code team therefore recommends to use the built-in JavaScript grammar.
 
 The original Atom JavaScript grammar is maintained at https://github.com/atom/language-javascript. Please file issue with the grammar against that repository. Requests for the extension (such as update requests) can be filed against the vscode repository.
 
