@@ -15,7 +15,7 @@
     "url": "https://github.com/Microsoft/vscode-js-atom-grammar.git"
   },
   "publisher": "ms-vscode",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "engines": {
     "vscode": "*"
   },
