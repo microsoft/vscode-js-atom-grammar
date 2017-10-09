@@ -1,38 +1,42 @@
 {
-	"name": "js-atom-grammar",
-	"private": true,
-    "displayName": "JavaScript Atom Grammar",
-    "description": "The Atom editor's JavaScript text mate grammar.",
-    "license": "SEE LICENSE IN LICENSE.txt",
-	"author": "Microsoft Corporation",
-    "galleryBanner": {
-		"color": "#5c2d91",
-		"theme": "dark"
-	},
-    "icon": "logo.png",
-	"publisher": "ms-vscode",
-	"version": "0.1.11",
-	"engines": { "vscode": "*" },
-	"devDependencies": {
-		"cson-parser": "^1.3.3"
-	},
-	"scripts": {
-		"update-grammar": "node ./build/update-grammar.js atom/language-javascript grammars/javascript.cson ./syntaxes/javascript.json"
-	},
-    "extensionDependencies": [
-        "vscode.javascript"
-    ],
-	"categories": [
-		"Languages"
-	],
-    "keywords": [
-        "javascript"
-    ],
-	"contributes": {
-		"grammars": [{
-			"language": "javascript",
-			"scopeName": "source.js",
-			"path": "./syntaxes/javascript.json"
-		}]
-	}
+  "name": "js-atom-grammar",
+  "private": true,
+  "displayName": "JavaScript Atom Grammar",
+  "description": "The Atom editor's JavaScript text mate grammar.",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "author": "Microsoft Corporation",
+  "galleryBanner": {
+    "color": "#5c2d91",
+    "theme": "dark"
+  },
+  "icon": "logo.png",
+  "publisher": "ms-vscode",
+  "version": "0.1.12",
+  "engines": {
+    "vscode": "*"
+  },
+  "devDependencies": {
+    "cson-parser": "^1.3.3"
+  },
+  "scripts": {
+    "update-grammar": "node ./build/update-grammar.js atom/language-javascript grammars/javascript.cson ./syntaxes/javascript.json"
+  },
+  "extensionDependencies": [
+    "vscode.javascript"
+  ],
+  "categories": [
+    "Languages"
+  ],
+  "keywords": [
+    "javascript"
+  ],
+  "contributes": {
+    "grammars": [
+      {
+        "language": "javascript",
+        "scopeName": "source.js",
+        "path": "./syntaxes/javascript.json"
+      }
+    ]
+  }
 }
