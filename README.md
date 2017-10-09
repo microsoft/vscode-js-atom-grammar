@@ -12,5 +12,5 @@ The original Atom JavaScript grammar is maintained at https://github.com/atom/la
 The extension is made available under the following [Microsoft Software License Terms](LICENSE.txt).
 
 The grammar syntaxes/javascript.json was derived from grammars/javascript.cson in the 
-Atom package https://github.com/atom/language-javascript, commit [atom/language-javascript@1e9eee4 (2016-09-08)](https://github.com/atom/language-javascript/commit/1e9eee42c100b929156dedc2345e7c1370bcdb7d). 
+Atom package https://github.com/atom/language-javascript, commit [atom/language-javascript@0daf8d8 (2017-08-11)](https://github.com/atom/language-javascript/commit/0daf8d8333996374836447e17b31c637e39d8a81). 
 The grammar included is licensed under the following license: https://github.com/atom/language-javascript/blob/master/LICENSE.md
